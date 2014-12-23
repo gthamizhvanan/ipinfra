@@ -13,24 +13,33 @@ with dbcon:
 		insertqry = str("INSERT INTO book (bname,bauthor,bversion,createdon,modifiedon) VALUES ")+strvalues
 		cur.execute(insertqry)
 		dbcon.commit()
-		return dbcon.insert_id()
+		return cur.rowcount
 	def readBook(bookid):
-                cur = dbcon.cursor()
-                qry = str("SELECT * FROM book WHERE bid = ")+str(bookid)
+		cur = dbcon.cursor()
+	        qry = str("SELECT * FROM book WHERE bid = ")+str(bookid)
 		cur.execute(qry)
 		ver = cur.fetchone()
-		print ver
-                dbcon.commit()
-	def deleteBook(bookid):
+	        dbcon.commit()
+		return ver
+	def listBook():
                 cur = dbcon.cursor()
-                qry = str("DELETE FROM book WHERE bid = ")+str(bookid)
+                qry = str("SELECT * FROM book")
                 cur.execute(qry)
-                ver = cur.fetchone()
-                print (ver)
+                ver = cur.fetchall()
                 dbcon.commit()
-	#def editBook(bookVal,whereCon):
-		#cur = dbcon.cursor()
-                #strvalues = ''
+                return ver
+	def deleteBook(bookid):
+		cur = dbcon.cursor()
+	        dqry = "DELETE FROM book WHERE bid = %s"
+	        cur.execute(dqry,(bookid))
+	        dbcon.commit()
+		return cur.rowcount
+	def updateBook(bookfieldval,bookid):
+		cur = dbcon.cursor()
+		qry = str("UPDATE book SET ")+str(bookfieldval)+str(" WHERE bid = ")+str(bookid)
+		cur.execute(qry)
+	        dbcon.commit()
+	        return cur.rowcount
                 #for i,j in enumerate(book):
               	#	strvalues += str("(")+str(i+str('=')+book[j]+str(')')
 		#whereConlength = len(whereCon)
